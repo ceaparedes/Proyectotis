@@ -1,0 +1,106 @@
+<?php
+
+/**
+ * This is the model class for table "asignatura".
+ *
+ * The followings are the available columns in table 'asignatura':
+ * @property integer $as_id
+ * @property integer $ca_id
+ * @property string $as_nombre
+ *
+ * The followings are the available model relations:
+ * @property PostulaPropuesta[] $postulaPropuestas
+ * @property Carrera $ca
+ * @property Practica[] $practicas
+ */
+class Asignatura extends CActiveRecord
+{
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'asignatura';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('as_id, ca_id', 'required'),
+			array('as_id, ca_id', 'numerical', 'integerOnly'=>true),
+			array('as_nombre', 'length', 'max'=>1024),
+			// The following rule is used by search().
+			// @todo Please remove those attributes that should not be searched.
+			array('as_id, ca_id, as_nombre', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			'postulaPropuestas' => array(self::HAS_MANY, 'PostulaPropuesta', 'as_id'),
+			'ca' => array(self::BELONGS_TO, 'Carrera', 'ca_id'),
+			'practicas' => array(self::HAS_MANY, 'Practica', 'as_id'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'as_id' => 'Asignatura',
+			'ca_id' => 'Carerra',
+			'as_nombre' => 'Nombre',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// @todo Please modify the following code to remove attributes that should not be searched.
+
+		$criteria=new CDbCriteria;
+
+		$criteria->compare('as_id',$this->as_id);
+		$criteria->compare('ca_id',$this->ca_id);
+		$criteria->compare('as_nombre',$this->as_nombre,true);
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
+	 * @param string $className active record class name.
+	 * @return Asignatura the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+}
